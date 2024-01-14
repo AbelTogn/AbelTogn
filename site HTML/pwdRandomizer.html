@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Password Randomizer</title>
+        <link href="index.css" rel="stylesheet">
+        <link rel="icon" href="icone.ico" type="image/x-icon">
+        <meta charset="utf-8">
+        <style>
+            p{color: white;}
+            div{margin-left:25%;}
+            button{
+                width:650px;
+                height: 500px;
+            }
+            h1{font-size:100px;}
+            input{color:white;}
+        </style>
+    </head>
+    <body>
+        <ul class="navbar">
+            <li class="elnavbar"><a href="index.html">Home</a></li>
+            <li class="elnavbar"><a href="contacts.html">Contacts</a></li>
+            <li class="elnavbar"><a href="randomizer.html">Randomizer</a></li>
+            <li class="elnavbar"><a href="pwdrandomizer.html" style="background-color: #04AA6D; float:right;">Password Randomizer</a></li>
+        </ul>
+        <div>
+            <button class="title" onclick="pwdGenerator()"><h1>Randomizer</h1></button>
+            <p>Nombre de caractères:</p>
+            <input type="text" id="Get" value="">
+            <p>Mot de passe:</p>
+        </div>
+        <input type="text" id="Display" value="" style="width: 100%;">
+        <script>
+            function pwdGenerator(){
+                var length = parseInt(document.getElementById("Get").value);
+                var pwd = "";
+                var charstr = "azertyuiopqsdfghjklmwxcvbn,;:!?./§1234567890°+&é'(-è_çà)=~#{[|`^@]}$£¤¨µ";
+                const charArray = [charstr];
+                for (i in 0..length){
+                    pwd = pwd + charArray[Math.floor(Math.random() * Math.floor(length))];
+                }
+            }
+        </script>
+    </body>
+</html>
