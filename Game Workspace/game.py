@@ -17,10 +17,12 @@ def main():
         
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.type == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     pygame.draw.circle(screen, (255,0,0), (255,255), 100)
+                    pygame.display.flip()
 
         screen.fill((255,255,255))
-
+        pygame.display.flip()
+        
 if __name__ == "__main__":
     main()
