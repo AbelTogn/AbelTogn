@@ -15,14 +15,17 @@ class MySprite(pygame.sprite.Sprite):
 def main():
     pygame.init()
 
+    # Define the screen
     screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE)
 
-    x, y = 255, 255
-    width, height = 50, 50  # Initial width and height
+    x, y = 255, 255                     # Initial position
+    width, height = 50, 50              # Initial width and height
+    image_path = "images/sprite.png"    # Sprite image
 
-    image_path = "images/sprite.png"
-
+    # Define the sprite
     my_sprite = MySprite(x, y, image_path, width, height)
+
+    # Add sprite to all sprites
     all_sprites = pygame.sprite.Group(my_sprite)
 
     running = True
@@ -35,6 +38,7 @@ def main():
                 # Adjust the window size
                 screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
                 my_sprite.rect.topleft = (x, y)  # Update sprite position on resize
+                
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     x += 10
@@ -45,9 +49,9 @@ def main():
                 elif event.key == pygame.K_DOWN:
                     y += 10
 
-        screen.fill((255, 255, 255))
-
         all_sprites.update()
+
+        screen.fill((255, 255, 255))
 
         all_sprites.draw(screen)
         pygame.display.flip()
