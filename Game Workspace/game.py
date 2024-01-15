@@ -15,8 +15,10 @@ class MySprite(pygame.sprite.Sprite):
 def main():
     pygame.init()
 
-    # Define the screen
+    # Define window
     screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE)
+    # Define the name of the window
+    pygame.display.set_caption('Game')
 
     x, y = 255, 255                     # Initial position
     width, height = 50, 50              # Initial width and height
