@@ -44,7 +44,6 @@ def main():
                 elif event.key == pygame.K_LEFT:
                     x -= 10
                     my_sprite.rect.x = x
-                
         all_sprites.update()
 
         screen.fill((255, 255, 255))
