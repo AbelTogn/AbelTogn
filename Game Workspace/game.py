@@ -1,5 +1,6 @@
 import pygame
 import sys
+import cv2 as cv
 
 class MySprite(pygame.sprite.Sprite):
     def __init__(self, x, y, image_path, width, height):
@@ -39,7 +40,23 @@ class MySprite(pygame.sprite.Sprite):
 ground_level = 500  # Adjust the ground level as needed
 
 def main():
+    # Start pygame
     pygame.init()
+    # Start capturing video
+    # Open a video capture object (0 represents the default camera)
+    cap = cv.VideoCapture(0)
+
+    while True:
+        # Read a frame from the camera
+        ret, frame = cap.read()
+
+        # Display the frame
+        cv.imshow('Frame', frame)
+
+        # Break the loop if 'q' key is pressed
+        if cv.waitKey(1) & 0xFF == ord('q'):
+            break
+
 
     # Define window
     screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
@@ -88,7 +105,9 @@ def main():
 
         all_sprites.draw(screen)
         pygame.display.flip()
-        
+        cap.release()
+
+    cv.destroyAllWindows()
     pygame.quit()
     sys.exit()
 
