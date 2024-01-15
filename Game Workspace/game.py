@@ -4,19 +4,13 @@ import sys
 class MySprite(pygame.sprite.Sprite):
     def __init__(self, x, y, image_path, width, height):
         super().__init__()
-        self.image = pygame.image.load(image_path).convert_alpha()
+        self.set_image(image_path, width, height)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.width = width
-        self.height = height
 
-    def set_width(self, width):
-        self.width = width
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
-
-    def set_height(self, height):
-        self.height = height
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+    def set_image(self, image_path, width, height):
+        original_image = pygame.image.load(image_path).convert_alpha()
+        self.image = pygame.transform.scale(original_image, (width, height))
 
 def main():
     pygame.init()
@@ -36,7 +30,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
+            
+            elif event.type == pygame.VIDEORESIZE:
+                # Adjust the window size
+                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                my_sprite.rect.topleft = (x, y)  # Update sprite position on resize
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     x += 10
@@ -46,10 +44,6 @@ def main():
                     y -= 10
                 elif event.key == pygame.K_DOWN:
                     y += 10
-                elif event.key == pygame.K_w:
-                    my_sprite.set_width(my_sprite.width + 10)
-                elif event.key == pygame.K_h:
-                    my_sprite.set_height(my_sprite.height + 10)
 
         screen.fill((255, 255, 255))
 
