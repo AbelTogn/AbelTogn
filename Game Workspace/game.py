@@ -17,7 +17,7 @@ class MySprite(pygame.sprite.Sprite):
 
     def jump(self):
         # Only allow jumping if the sprite is on the ground (you can modify this condition)
-        if self.rect.y == 255:
+        if self.rect.y == ground_level:
             self.velocity_y = -15  # Set a negative value to go upwards
 
     def update(self):
@@ -29,24 +29,26 @@ class MySprite(pygame.sprite.Sprite):
             self.velocity_y = 10
 
         # Check if the sprite has reached the ground
-        if self.rect.y >= 255:
-            self.rect.y = 255  # Reset the position to the ground
+        if self.rect.y >= ground_level:
+            self.rect.y = ground_level  # Reset the position to the ground
             self.velocity_y = 0  # Stop the vertical movement
 
         # Update horizontal position based on velocity
         self.rect.x += self.velocity_x
 
+ground_level = 500  # Adjust the ground level as needed
+
 def main():
     pygame.init()
 
     # Define window
-    screen = pygame.display.set_mode((0,0), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
     # Define the name of the window
     pygame.display.set_caption('Game')
 
-    x, y = 0,0                          # Initial position
-    width, height = 50, 50              # Initial width and height
-    image_path = "images/sprite.png"    # Sprite image
+    x, y = 255, ground_level  # Initial position with lower ground level
+    width, height = 50, 50    # Initial width and height
+    image_path = "images/sprite.png"  # Sprite image
 
     # Define the sprite
     my_sprite = MySprite(x, y, image_path, width, height)   
@@ -69,9 +71,9 @@ def main():
             # Handle continuous movement when a key is held down
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    my_sprite.velocity_x = 1.25  # Adjust the speed as needed
+                    my_sprite.velocity_x = 5  # Adjust the speed as needed
                 elif event.key == pygame.K_LEFT:
-                    my_sprite.velocity_x = -1.25  # Adjust the speed as needed
+                    my_sprite.velocity_x = -5  # Adjust the speed as needed
                 elif event.key == pygame.K_SPACE:
                     my_sprite.jump()
 
