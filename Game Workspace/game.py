@@ -40,11 +40,11 @@ def main():
     pygame.init()
 
     # Define window
-    screen = pygame.display.set_mode((500, 500), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((0,0), pygame.RESIZABLE)
     # Define the name of the window
     pygame.display.set_caption('Game')
 
-    x, y = 255, 255                     # Initial position
+    x, y = 0,0                          # Initial position
     width, height = 50, 50              # Initial width and height
     image_path = "images/sprite.png"    # Sprite image
 
