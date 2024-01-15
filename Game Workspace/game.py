@@ -37,17 +37,19 @@ def main():
             elif event.type == pygame.VIDEORESIZE:
                 # Adjust the window size
                 screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
-                my_sprite.rect.topleft = (x, y)  # Update sprite position on resize
-                
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
                     x += 10
+                    my_sprite.rect.x = x
                 elif event.key == pygame.K_LEFT:
                     x -= 10
+                    my_sprite.rect.x = x
                 elif event.key == pygame.K_UP:
                     y -= 10
+                    my_sprite.rect.y = y
                 elif event.key == pygame.K_DOWN:
                     y += 10
+                    my_sprite.rect.y = y
 
         all_sprites.update()
 
