@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPEhtml>
+<html lang="fr">
+    <head>
+        <title>Game Reviews</title>
+        <meta charset="utf-8" content="width=device-width, initial-scale=1.0"/>
+        <link href="index.css" rel="stylesheet"/>
+        <link rel="icon" href="icone.ico" type="image/x-icon"/>
+        <style>
+            #GrandeDiv {
+                margin-bottom: 25%;
+                width: 25%;
+                float: left;
+            }
+
+            span {
+                font-size: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="navbar">
+            <!-- Populate navbar from data.xml -->
+            <xsl:for-each select="/root/navbar/item">
+                <li class="elnavbar"><a href="{@href}" style="{@style}"><xsl:value-of select="."/></a></li>
+            </xsl:for-each>
+        </ul>
+        <h1 class="title"><a href="{/root/title/@href}"><xsl:value-of select="/root/title"/></a></h1>
+        <div id="GrandeDiv">
+            <h2 class="sommaire">SOMMAIRE:</h2>
+            <div>
+                <ol>
+                    <!-- Populate categories from data.xml -->
+                    <xsl:for-each select="/root/categories/category">
+                        <li><a href="{@href}" class="{@class}"><xsl:value-of select="."/></a></li>
+                    </xsl:for-each>
+                </ol>
+            </div>
+        </div>
+        <div class="divPartenaires">
+            <h3 class="subtitle">Liens de nos partenaires officiels:</h3>
+            <ul>
+                <!-- Populate partners from data.xml -->
+                <xsl:for-each select="/root/partners/partner">
+                    <li><a href="{@href}" target="_blank"><xsl:value-of select="."/></a></li>
+                </xsl:for-each>
+            </ul>
+        </div>
+    </body>
+</html>
