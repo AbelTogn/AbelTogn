@@ -44,13 +44,7 @@ def main():
                 elif event.key == pygame.K_LEFT:
                     x -= 10
                     my_sprite.rect.x = x
-                elif event.key == pygame.K_UP:
-                    y -= 10
-                    my_sprite.rect.y = y
-                elif event.key == pygame.K_DOWN:
-                    y += 10
-                    my_sprite.rect.y = y
-
+                
         all_sprites.update()
 
         screen.fill((255, 255, 255))
