@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPEhtml>
-<html lang="fr">
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;">
+]>
+<html lang="fr" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <head>
         <title>Game Reviews</title>
         <meta charset="utf-8" content="width=device-width, initial-scale=1.0"/>
