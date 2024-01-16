@@ -105,7 +105,7 @@ def main():
         # Vérifier la collision avec l'ennemi pendant la période d'invincibilité
         if (
             invincibility_counter == 0
-            and player_x < enemy_x + enemy_size
+            and player_x < enemy_x + enemy_size 
             and player_x + player_size > enemy_x
             and player_y < enemy_y + enemy_size
             and player_y + player_size > enemy_y
@@ -116,6 +116,10 @@ def main():
                 enemy_x = screen_width
                 enemy_y = screen_height - enemy_size - 10
                 points += 10
+
+                # Vérifier si le nombre de points est un multiple de 100
+                if points % 100 == 0:
+                    player_lives += 1
             else:
                 # Réinitialisation de la position du personnage
                 player_x = screen_width // 2 - player_size // 2
@@ -155,4 +159,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
