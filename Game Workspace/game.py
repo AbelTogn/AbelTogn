@@ -1,115 +1,81 @@
 import pygame
 import sys
-import cv2 as cv
 
-class MySprite(pygame.sprite.Sprite):
-    def __init__(self, x, y, image_path, width, height):
-        super().__init__()
-        self.set_image(image_path, width, height)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.velocity_x = 0  # Initial horizontal velocity
-        self.velocity_y = 0  # Initial vertical velocity
-        self.gravity = 1  # Gravity value
+# Initialisation de Pygame
+pygame.init()
 
-    def set_image(self, image_path, width, height):
-        original_image = pygame.image.load(image_path).convert_alpha()
-        self.image = pygame.transform.scale(original_image, (width, height))
+# Paramètres de l'écran
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Mario-like Drawing and Jumping Game")
 
-    def jump(self):
-        # Only allow jumping if the sprite is on the ground (you can modify this condition)
-        if self.rect.y == ground_level:
-            self.velocity_y = -15  # Set a negative value to go upwards
+# Couleurs
+white = (255, 255, 255)
+blue = (0, 0, 255)
 
-    def update(self):
-        self.velocity_y += self.gravity  # Apply gravity
-        self.rect.y += self.velocity_y
+# Personnage
+player_size = 50
+player_x = screen_width // 2 - player_size // 2
+player_y = screen_height - player_size - 10
+player_y_speed = 0
+gravity = 1
+jump_strength = -15
+on_ground = True
 
-        # Limit the vertical speed (optional)
-        if self.velocity_y > 10:
-            self.velocity_y = 10
+# Couleur du crayon
+pen_color = (0, 0, 0)
+drawing = False
+draw_radius = 5
 
-        # Check if the sprite has reached the ground
-        if self.rect.y >= ground_level:
-            self.rect.y = ground_level  # Reset the position to the ground
-            self.velocity_y = 0  # Stop the vertical movement
+# Boucle principale
+clock = pygame.time.Clock()
 
-        # Update horizontal position based on velocity
-        self.rect.x += self.velocity_x
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-ground_level = 500  # Adjust the ground level as needed
+        # Gestion des événements de dessin
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            drawing = True
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            drawing = False
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            pygame.draw.circle(screen, pen_color, event.pos, draw_radius)
 
-def main():
-    # Start pygame
-    pygame.init()
-    # Start capturing video
-    # Open a video capture object (0 represents the default camera)
-    cap = cv.VideoCapture(0)
+    keys = pygame.key.get_pressed()
 
-    while True:
-        # Read a frame from the camera
-        ret, frame = cap.read()
+    # Déplacement du personnage
+    if keys[pygame.K_LEFT]:
+        player_x -= 5
+    if keys[pygame.K_RIGHT]:
+        player_x += 5
 
-        # Display the frame
-        cv.imshow('Frame', frame)
+    # Saut du personnage
+    if keys[pygame.K_SPACE] and on_ground:
+        player_y_speed = jump_strength
+        on_ground = False
 
-        # Break the loop if 'q' key is pressed
-        if cv.waitKey(1) & 0xFF == ord('q'):
-            break
+    # Appliquer la gravité
+    player_y_speed += gravity
+    player_y += player_y_speed
 
+    # Vérifier si le personnage touche le sol
+    if player_y > screen_height - player_size - 10:
+        player_y = screen_height - player_size - 10
+        player_y_speed = 0
+        on_ground = True
 
-    # Define window
-    screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
-    # Define the name of the window
-    pygame.display.set_caption('Game')
+    # Effacement de l'écran
+    screen.fill(white)
 
-    x, y = 255, ground_level  # Initial position with lower ground level
-    width, height = 50, 50    # Initial width and height
-    image_path = "images/sprite.png"  # Sprite image
+    # Dessiner le personnage
+    pygame.draw.rect(screen, blue, (player_x, player_y, player_size, player_size))
 
-    # Define the sprite
-    my_sprite = MySprite(x, y, image_path, width, height)   
+    # Mettre à jour l'affichage
+    pygame.display.flip()
 
-    # Add sprite to all sprites
-    all_sprites = pygame.sprite.Group(my_sprite)
-
-    running = True
-    while running:
-
-        for event in pygame.event.get():
-            # Define Quit 
-            if event.type == pygame.QUIT:
-                running = False
-            
-            elif event.type == pygame.VIDEORESIZE:
-                # Adjust the window size
-                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
-
-            # Handle continuous movement when a key is held down
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    my_sprite.velocity_x = 5  # Adjust the speed as needed
-                elif event.key == pygame.K_LEFT:
-                    my_sprite.velocity_x = -5  # Adjust the speed as needed
-                elif event.key == pygame.K_SPACE:
-                    my_sprite.jump()
-
-            # Stop movement when a key is released
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
-                    my_sprite.velocity_x = 0
-
-        all_sprites.update()
-
-        screen.fill((255, 255, 255))
-
-        all_sprites.draw(screen)
-        pygame.display.flip()
-        cap.release()
-
-    cv.destroyAllWindows()
-    pygame.quit()
-    sys.exit()
-
-if __name__ == "__main__":
-    main()
+    # Réguler la vitesse de la boucle
+    clock.tick(60)
