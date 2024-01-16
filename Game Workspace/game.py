@@ -16,6 +16,10 @@ def main():
     red = (255, 0, 0)
     blue = (0, 0, 255)
 
+    # Valeurs de départ
+    points = 0
+    coins = 0
+
     # Personnage
     player_size = 50
     player_x = screen_width // 2 - player_size // 2
@@ -24,7 +28,7 @@ def main():
     gravity = 1
     jump_strength = -15
     on_ground = True
-    player_lives = 10
+    player_lives = 3
 
     # Ennemi
     enemy_size = 50
@@ -42,6 +46,10 @@ def main():
 
     # Couleur du texte
     black = (0, 0, 0)
+
+    # Durée de l'invincibilité en frames (60 frames par seconde)
+    invincibility_duration = 60
+    invincibility_counter = 0
 
     # Boucle principale
     clock = pygame.time.Clock()
@@ -84,15 +92,20 @@ def main():
         player_y_speed += gravity
         player_y += player_y_speed
 
+        # Gestion de l'invincibilité
+        if invincibility_counter > 0:
+            invincibility_counter -= 1
+
         # Vérifier si le personnage touche le sol
         if player_y > screen_height - player_size - 10:
             player_y = screen_height - player_size - 10
             player_y_speed = 0
             on_ground = True
 
-        # Vérifier la collision avec l'ennemi
+        # Vérifier la collision avec l'ennemi pendant la période d'invincibilité
         if (
-            player_x < enemy_x + enemy_size
+            invincibility_counter == 0
+            and player_x < enemy_x + enemy_size
             and player_x + player_size > enemy_x
             and player_y < enemy_y + enemy_size
             and player_y + player_size > enemy_y
@@ -102,11 +115,13 @@ def main():
                 # Réinitialisation de la position de l'ennemi
                 enemy_x = screen_width
                 enemy_y = screen_height - enemy_size - 10
+                points += 10
             else:
                 # Réinitialisation de la position du personnage
                 player_x = screen_width // 2 - player_size // 2
                 player_y = screen_height - player_size - 10
                 player_lives -= 1
+                invincibility_counter = invincibility_duration
 
         # Effacement de l'écran
         screen.fill(white)
@@ -124,9 +139,13 @@ def main():
         # Dessiner et activer le game over
         if player_lives <= 0:
             game_over_text = font.render("Game Over", True, black)
-            screen.blit(game_over_text, (screen_height/2, screen_width/2))
+            screen.blit(game_over_text, (screen_width // 2 - 70, screen_height // 2))
             enemy_speed = 0
             enemy_x = screen_width
+
+        # Dessiner le nombre de points
+        points_text = font.render(f"Points: {points}", True, black)
+        screen.blit(points_text, (10, 40))
 
         # Mettre à jour l'affichage
         pygame.display.flip()
@@ -136,3 +155,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
