@@ -8,7 +8,7 @@ class Enemy:
         self.size = size
         self.speed = speed
 
-    def move(self):
+    def move(self, screen_width, screen_height):
         self.x -= self.speed
         if self.x + self.size < 0:
             self.x = screen_width
@@ -43,9 +43,9 @@ def main():
     player_lives = 3
 
     # Ennemi
-    enemy_size = 50
-    enemy_speed = 5
-    enemy = Enemy(screen_width, screen_height, enemy_size, enemy_speed)
+    enemy_walk_size = 50
+    enemy_walk_speed = 5
+    enemy_walk = Enemy(screen_width, screen_height, enemy_walk_size, enemy_walk_speed)
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
@@ -93,7 +93,7 @@ def main():
             on_ground = False
 
         # Déplacement de l'ennemi
-        enemy.move()
+        enemy_walk.move(screen_width, screen_height)
 
         # Appliquer la gravité
         player_y_speed += gravity
@@ -112,16 +112,16 @@ def main():
         # Vérifier la collision avec l'ennemi pendant la période d'invincibilité
         if (
             invincibility_counter == 0
-            and player_x < enemy.x + enemy.size 
-            and player_x + player_size > enemy.x
-            and player_y < enemy.y + enemy.size
-            and player_y + player_size > enemy.y
+            and player_x < enemy_walk.x + enemy_walk.size 
+            and player_x + player_size > enemy_walk.x
+            and player_y < enemy_walk.y + enemy_walk.size
+            and player_y + player_size > enemy_walk.y
         ):
             # Si le joueur est au-dessus de l'ennemi et en train de descendre
-            if player_y + player_size < enemy.y + enemy.size and player_y_speed > 0:
+            if player_y + player_size < enemy_walk.y + enemy_walk.size and player_y_speed > 0:
                 # Réinitialisation de la position de l'ennemi
-                enemy.x = screen_width
-                enemy.y = screen_height - enemy.size - 10
+                enemy_walk.x = screen_width
+                enemy_walk.y = screen_height - enemy_walk.size - 10
                 points += 10
 
                 # Vérifier si le nombre de points est un multiple de 100
@@ -141,7 +141,7 @@ def main():
         pygame.draw.rect(screen, blue, (player_x, player_y, player_size, player_size))
 
         # Dessiner l'ennemi
-        pygame.draw.rect(screen, red, (enemy.x, enemy.y, enemy.size, enemy.size))
+        pygame.draw.rect(screen, red, (enemy_walk.x, enemy_walk.y, enemy_walk.size, enemy_walk.size))
 
         # Dessiner le nombre de vies
         lives_text = font.render(f"Lives: {player_lives}", True, black)
@@ -151,8 +151,8 @@ def main():
         if player_lives <= 0:
             game_over_text = font.render("Game Over", True, black)
             screen.blit(game_over_text, (screen_width // 2 - 70, screen_height // 2))
-            enemy.speed = 0
-            enemy.x = screen_width
+            enemy_walk.speed = 0
+            enemy_walk.x = screen_width
 
         # Dessiner le nombre de points
         points_text = font.render(f"Points: {points}", True, black)
