@@ -8,16 +8,13 @@ def main():
     # Paramètres de l'écran
     screen_width = 800
     screen_height = 600
-    screen = pygame.display.set_mode((screen_width, screen_height))
+    screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     pygame.display.set_caption("Mario-like Drawing and Jumping Game")
 
     # Couleurs
     white = (255, 255, 255)
-    red = (255,0,0)
-    green = (0,255,0)
+    red = (255, 0, 0)
     blue = (0, 0, 255)
-    black = (0, 0, 0)
-
 
     # Personnage
     player_size = 50
@@ -27,11 +24,24 @@ def main():
     gravity = 1
     jump_strength = -15
     on_ground = True
+    player_lives = 10
+
+    # Ennemi
+    enemy_size = 50
+    enemy_x = screen_width
+    enemy_y = screen_height - enemy_size - 10
+    enemy_speed = 5
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
     drawing = False
     draw_radius = 5
+
+    # Police pour le texte
+    font = pygame.font.Font(None, 36)
+
+    # Couleur du texte
+    black = (0, 0, 0)
 
     # Boucle principale
     clock = pygame.time.Clock()
@@ -59,9 +69,16 @@ def main():
             player_x += 5
 
         # Saut du personnage
-        if keys[pygame.K_SPACE] and on_ground:
+        if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and on_ground:
             player_y_speed = jump_strength
             on_ground = False
+
+        # Déplacement de l'ennemi
+        enemy_x -= enemy_speed
+        if enemy_x + enemy_size < 0:
+            # Réinitialisation de la position de l'ennemi
+            enemy_x = screen_width
+            enemy_y = screen_height - enemy_size - 10
 
         # Appliquer la gravité
         player_y_speed += gravity
@@ -73,11 +90,43 @@ def main():
             player_y_speed = 0
             on_ground = True
 
+        # Vérifier la collision avec l'ennemi
+        if (
+            player_x < enemy_x + enemy_size
+            and player_x + player_size > enemy_x
+            and player_y < enemy_y + enemy_size
+            and player_y + player_size > enemy_y
+        ):
+            # Si le joueur est au-dessus de l'ennemi et en train de descendre
+            if player_y + player_size < enemy_y + enemy_size and player_y_speed > 0:
+                # Réinitialisation de la position de l'ennemi
+                enemy_x = screen_width
+                enemy_y = screen_height - enemy_size - 10
+            else:
+                # Réinitialisation de la position du personnage
+                player_x = screen_width // 2 - player_size // 2
+                player_y = screen_height - player_size - 10
+                player_lives -= 1
+
         # Effacement de l'écran
         screen.fill(white)
 
         # Dessiner le personnage
         pygame.draw.rect(screen, blue, (player_x, player_y, player_size, player_size))
+
+        # Dessiner l'ennemi
+        pygame.draw.rect(screen, red, (enemy_x, enemy_y, enemy_size, enemy_size))
+
+        # Dessiner le nombre de vies
+        lives_text = font.render(f"Lives: {player_lives}", True, black)
+        screen.blit(lives_text, (10, 10))
+
+        # Dessiner et activer le game over
+        if player_lives <= 0:
+            game_over_text = font.render("Game Over", True, black)
+            screen.blit(game_over_text, (screen_height/2, screen_width/2))
+            enemy_speed = 0
+            enemy_x = screen_width
 
         # Mettre à jour l'affichage
         pygame.display.flip()
