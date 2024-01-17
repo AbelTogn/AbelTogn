@@ -3,7 +3,7 @@ import pygame
 import sys
 import time
 class Enemy:
-    def __init__(self, screen_width, screen_height, size, speed, follow_player, color, destroy):
+    def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, color: tuple, destroy: bool):
         if follow_player:
             self.x = 0
         else:
@@ -15,7 +15,7 @@ class Enemy:
         self.color = color
         self.destroy = False
 
-    def move(self, screen_width, screen_height, player_x):
+    def move(self, screen_width: int, screen_height: int, player_x: float):
         if self.follow_player:
             if player_x > self.x:
                 self.x += self.speed
@@ -71,11 +71,11 @@ def main():
 
     # Ennemis
     all_enemies = []
-    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, red, False)
+    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, False, red, False)
     all_enemies.append(enemy_walk)
-    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, green, False)
+    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, green, False)
     all_enemies.append(enemy_follow)
-    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, black, False)
+    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, black, False)
     all_enemies.append(enemy_jump)
 
     # Couleur du crayon
@@ -190,10 +190,10 @@ def main():
             # Dessiner et activer le game over
             game_over_text = font.render("Game Over", True, black)
             screen.blit(game_over_text, (screen_width // 2 - 70, screen_height // 2))
-            enemy_walk.speed = 0
-            enemy_walk.x = screen_width
-            enemy_follow.speed = 0
-            enemy_follow.x = screen_width
+            for enemy in all_enemies:
+                enemy.speed = 0
+                enemy.x = screen_width
+            enemy_follow.x = 0
                     
             # Dessiner le bouton retry
             retry_button = pygame.Rect(screen_width // 2 - 50, screen_height // 2 + 50, 100, 50)
@@ -219,6 +219,13 @@ def main():
                 enemy_walk.x = screen_width
                 enemy_follow.x = screen_width
                 on_ground = True
+                for enemy in all_enemies:
+                    if enemy.follow_player:
+                        enemy.speed = enemy_very_low_speed
+                    elif enemy.jump:
+                        enemy.speed = enemy_low_speed
+                    elif not enemy.follow and not enemy.jump:
+                        enemy.speed = enemy_normal_speed
 
         # Dessiner le nombre de points
         points_text = font.render(f"Points: {points}", True, black)
