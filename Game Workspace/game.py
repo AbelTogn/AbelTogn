@@ -1,11 +1,12 @@
 import pygame
 import sys
-
-
-print(__name__)
+import time
 class Enemy:
     def __init__(self, screen_width, screen_height, size, speed, follow_player, color, destroy):
-        self.x = screen_width
+        if follow_player:
+            self.x = 0
+        else:
+            self.x = screen_width
         self.y = screen_height - size - 10
         self.size = size
         self.speed = speed
@@ -68,8 +69,11 @@ def main():
     enemy_high_speed = 10
 
     # Ennemis
+    all_enemies = []
     enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, red, False)
+    all_enemies.append(enemy_walk)
     enemy_follow = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, True, green, False)
+    all_enemies.append(enemy_follow)
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
@@ -135,7 +139,7 @@ def main():
             on_ground = True
 
         # Vérifier la collision avec l'ennemi pendant la période d'invincibilité
-        for enemy in [enemy_walk, enemy_follow]:
+        for enemy in all_enemies:
             if (
                 not enemy.destroy
                 and invincibility_counter == 0
@@ -147,7 +151,10 @@ def main():
                 # Si le joueur est au-dessus de l'ennemi et en train de descendre
                 if player_y + player_size < enemy.y + enemy.size and player_y_speed > 0:
                     # Réinitialisation de la position de l'ennemi
-                    enemy.x = screen_width
+                    if enemy.follow_player:
+                        enemy.x = 0
+                    else:
+                        enemy.x = screen_width
                     enemy.y = screen_height - enemy.size - 10
                     points += 10
 
@@ -168,7 +175,7 @@ def main():
         pygame.draw.rect(screen, blue, (player_x, player_y, player_size, player_size))
 
         # Dessiner les ennemis s'ils ne sont pas détruits
-        for enemy in [enemy_follow, enemy_walk]:
+        for enemy in all_enemies:
             if not enemy.destroy:
                 pygame.draw.rect(screen, enemy.color, (enemy.x, enemy.y, enemy.size, enemy.size))
 
