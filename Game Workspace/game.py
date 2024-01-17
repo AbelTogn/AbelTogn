@@ -1,3 +1,4 @@
+from tkinter import E
 import pygame
 import sys
 import time
@@ -20,8 +21,6 @@ class Enemy:
                 self.x += self.speed
             elif player_x < self.x:
                 self.x -= self.speed
-            elif player_x == self.x: 
-                self.destroy
         else:
             self.x -= self.speed
 
@@ -40,6 +39,7 @@ def main():
     pygame.display.set_caption("Platformer game")
 
     # Couleurs
+    black = (0, 0, 0)
     white = (255, 255, 255)
     red = (255, 0, 0)
     green = (0, 255, 0)
@@ -64,7 +64,8 @@ def main():
     enemy_high_size = 100
 
     # Vitesse des ennemis
-    enemy_low_speed = 3.5
+    enemy_very_low_speed = 1.5
+    enemy_low_speed = 2
     enemy_normal_speed = 5
     enemy_high_speed = 10
 
@@ -72,8 +73,10 @@ def main():
     all_enemies = []
     enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, red, False)
     all_enemies.append(enemy_walk)
-    enemy_follow = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, True, green, False)
+    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, green, False)
     all_enemies.append(enemy_follow)
+    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, black, False)
+    all_enemies.append(enemy_jump)
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
@@ -121,8 +124,8 @@ def main():
             on_ground = False
 
         # Déplacement des ennemis
-        enemy_walk.move(screen_width, screen_height, player_x)
-        enemy_follow.move(screen_width, screen_height, player_x)
+        for enemy in all_enemies:
+            enemy.move(screen_width, screen_height, player_x)
 
         # Appliquer la gravité
         player_y_speed += gravity
