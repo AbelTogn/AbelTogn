@@ -1,14 +1,17 @@
 import pygame
 import sys
 
+
+print(__name__)
 class Enemy:
-    def __init__(self, screen_width, screen_height, size, speed, follow_player, color):
+    def __init__(self, screen_width, screen_height, size, speed, follow_player, color, destroy):
         self.x = screen_width
         self.y = screen_height - size - 10
         self.size = size
         self.speed = speed
         self.follow_player = follow_player
         self.color = color
+        self.destroy = False
 
     def move(self, screen_width, screen_height, player_x):
         if self.follow_player:
@@ -16,6 +19,8 @@ class Enemy:
                 self.x += self.speed
             elif player_x < self.x:
                 self.x -= self.speed
+            else:
+                self.destroy
         else:
             self.x -= self.speed
 
@@ -58,13 +63,13 @@ def main():
     enemy_high_size = 100
 
     # Vitesse des ennemis
-    enemy_low_speed = 2.5
+    enemy_low_speed = 3.5
     enemy_normal_speed = 5
     enemy_high_speed = 10
 
     # Ennemis
-    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, red)
-    enemy_follow = Enemy(screen_width, screen_height, enemy_normal_size, enemy_low_speed, True, green)
+    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, red, False)
+    enemy_follow = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, True, green, False)
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
@@ -132,7 +137,8 @@ def main():
         # Vérifier la collision avec l'ennemi pendant la période d'invincibilité
         for enemy in [enemy_walk, enemy_follow]:
             if (
-                invincibility_counter == 0
+                not enemy.destroy
+                and invincibility_counter == 0
                 and player_x < enemy.x + enemy.size
                 and player_x + player_size > enemy.x
                 and player_y < enemy.y + enemy.size
@@ -161,9 +167,10 @@ def main():
         # Dessiner le personnage
         pygame.draw.rect(screen, blue, (player_x, player_y, player_size, player_size))
 
-        # Dessiner les ennemis
-        pygame.draw.rect(screen, enemy_walk.color, (enemy_walk.x, enemy_walk.y, enemy_walk.size, enemy_walk.size))
-        pygame.draw.rect(screen, enemy_follow.color, (enemy_follow.x, enemy_follow.y, enemy_follow.size, enemy_follow.size))
+        # Dessiner les ennemis s'ils ne sont pas détruits
+        for enemy in [enemy_follow, enemy_walk]:
+            if not enemy.destroy:
+                pygame.draw.rect(screen, enemy.color, (enemy.x, enemy.y, enemy.size, enemy.size))
 
         # Dessiner le nombre de vies
         lives_text = font.render(f"Lives: {player_lives}", True, black)
