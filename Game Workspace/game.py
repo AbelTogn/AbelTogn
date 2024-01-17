@@ -17,7 +17,7 @@ class Enemy:
         self.jump = jump
         self.follow_player = follow_player
         self.y_speed = 0
-        self.jump_strength = -15
+        self.jump_strength = -10
 
     def move(self, screen_width: int, screen_height: int, player_x: float, gravity: float):
         if self.follow_player:
@@ -25,15 +25,20 @@ class Enemy:
                 self.x += self.speed
             elif player_x < self.x:
                 self.x -= self.speed
+
         elif self.jump:
             # Simuler le mouvement de saut
+            if self.y == screen_height - self.size - 10:  # Vérifier si l'ennemi est au sol
+
+                self.y_speed = self.jump_strength  # Appliquer la force de saut seulement au sol
             self.y_speed += gravity  # Appliquer la gravité
             self.y += self.y_speed  # Mettre à jour la position verticale
+
             if self.y > screen_height - self.size - 10:  # Vérifier la collision avec le sol
-                self.x -= self.speed
+
                 self.y = screen_height - self.size - 10
-                self.x -= self.speed
-                self.y_speed = self.jump_strength  # Réinitialiser la vitesse pour un nouveau saut
+                self.y_speed = 0  # Réinitialiser la vitesse après le saut
+            self.x -= self.speed  # En même temps, l'ennemi avance horizontalement
 
         else:
             self.x -= self.speed
@@ -90,7 +95,7 @@ def main():
     all_enemies.append(enemy_walk)
     enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, green, False, gravity)
     all_enemies.append(enemy_follow)
-    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_high_speed, False, True, black, False, gravity)
+    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, black, False, gravity)
     all_enemies.append(enemy_jump)
 
     # Couleur du crayon
@@ -180,9 +185,6 @@ def main():
                     if points % 100 == 0:
                         player_lives += 1
                 else:
-                    # Réinitialisation de la position du personnage
-                    player_x = screen_width // 2 - player_size // 2
-                    player_y = screen_height - player_size - 10
                     player_lives -= 1
                     invincibility_counter = invincibility_duration
 
