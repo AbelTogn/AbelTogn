@@ -1,9 +1,9 @@
-from tkinter import E
+#from tkinter import E
 import pygame
 import sys
 import time
 class Enemy:
-    def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, color: tuple, destroy: bool):
+    def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, color: tuple, destroy: bool, gravity: float):
         if follow_player:
             self.x = 0
         else:
@@ -13,13 +13,25 @@ class Enemy:
         self.speed = speed
         self.follow_player = follow_player
         self.color = color
-        self.destroy = False
+        self.destroy = destroy
+        self.jump = jump
+        self.follow_player = follow_player
+        self.y_speed = 0
+        self.jump_strength = -15
 
-    def move(self, screen_width: int, screen_height: int, player_x: float):
+    def move(self, screen_width: int, screen_height: int, player_x: float, gravity: float):
         if self.follow_player:
             if player_x > self.x:
                 self.x += self.speed
             elif player_x < self.x:
+                self.x -= self.speed
+        elif self.jump:
+            # Simuler le mouvement de saut
+            self.y_speed += gravity  # Appliquer la gravité
+            self.y += self.y_speed  # Mettre à jour la position verticale
+            if self.y > screen_height - self.size - 10:  # Vérifier la collision avec le sol
+                self.y = screen_height - self.size - 10
+                self.y_speed = self.jump_strength  # Réinitialiser la vitesse pour un nouveau saut
                 self.x -= self.speed
         else:
             self.x -= self.speed
@@ -68,14 +80,15 @@ def main():
     enemy_low_speed = 2
     enemy_normal_speed = 5
     enemy_high_speed = 10
+    enemy_very_high_speed = 15
 
     # Ennemis
     all_enemies = []
-    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, False, red, False)
+    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, False, red, False, gravity)
     all_enemies.append(enemy_walk)
-    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, green, False)
+    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, green, False, gravity)
     all_enemies.append(enemy_follow)
-    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, black, False)
+    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_high_speed, False, True, black, False, gravity)
     all_enemies.append(enemy_jump)
 
     # Couleur du crayon
@@ -125,7 +138,7 @@ def main():
 
         # Déplacement des ennemis
         for enemy in all_enemies:
-            enemy.move(screen_width, screen_height, player_x)
+            enemy.move(screen_width, screen_height, player_x, gravity)
 
         # Appliquer la gravité
         player_y_speed += gravity
@@ -193,7 +206,7 @@ def main():
             for enemy in all_enemies:
                 enemy.speed = 0
                 enemy.x = screen_width
-            enemy_follow.x = 0
+            enemy_follow.x = -enemy.size
                     
             # Dessiner le bouton retry
             retry_button = pygame.Rect(screen_width // 2 - 50, screen_height // 2 + 50, 100, 50)
@@ -224,7 +237,7 @@ def main():
                         enemy.speed = enemy_very_low_speed
                     elif enemy.jump:
                         enemy.speed = enemy_low_speed
-                    elif not enemy.follow and not enemy.jump:
+                    elif not enemy.follow_player and not enemy.jump:
                         enemy.speed = enemy_normal_speed
 
         # Dessiner le nombre de points
