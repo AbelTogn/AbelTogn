@@ -30,9 +30,11 @@ class Enemy:
             self.y_speed += gravity  # Appliquer la gravité
             self.y += self.y_speed  # Mettre à jour la position verticale
             if self.y > screen_height - self.size - 10:  # Vérifier la collision avec le sol
-                self.y = screen_height - self.size - 10
-                self.y_speed = self.jump_strength  # Réinitialiser la vitesse pour un nouveau saut
                 self.x -= self.speed
+                self.y = screen_height - self.size - 10
+                self.x -= self.speed
+                self.y_speed = self.jump_strength  # Réinitialiser la vitesse pour un nouveau saut
+
         else:
             self.x -= self.speed
 
