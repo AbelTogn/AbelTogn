@@ -19,7 +19,7 @@ class Enemy:
                 self.x += self.speed
             elif player_x < self.x:
                 self.x -= self.speed
-            else:
+            elif player_x == self.x: 
                 self.destroy
         else:
             self.x -= self.speed
