@@ -1,14 +1,19 @@
 #from tkinter import E
+from re import S
 import pygame
 import sys
 import time
+
 class Enemy:
-    def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, color: tuple, destroy: bool, gravity: float):
+    def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, fly: bool, color: tuple, destroy: bool, gravity: float, player_y: float):
         if follow_player:
             self.x = 0
         else:
             self.x = screen_width
-        self.y = screen_height - size - 10
+        if fly:
+            self.y = screen_height - size
+        else:
+            self.y = screen_height - size - 10
         self.size = size
         self.speed = speed
         self.follow_player = follow_player
@@ -18,8 +23,9 @@ class Enemy:
         self.follow_player = follow_player
         self.y_speed = 0
         self.jump_strength = -10
+        self.fly = fly
 
-    def move(self, screen_width: int, screen_height: int, player_x: float, gravity: float):
+    def move(self, screen_width: int, screen_height: int, player_x: float, gravity: float, player_y: float):
         if self.follow_player:
             if player_x > self.x:
                 self.x += self.speed
@@ -27,18 +33,25 @@ class Enemy:
                 self.x -= self.speed
 
         elif self.jump:
-            # Simuler le mouvement de saut
-            if self.y == screen_height - self.size - 10:  # Vérifier si l'ennemi est au sol
+            if self.y == screen_height - self.size - 10:
+                self.y_speed = self.jump_strength
+            self.y_speed += gravity
+            self.y += self.y_speed
 
-                self.y_speed = self.jump_strength  # Appliquer la force de saut seulement au sol
-            self.y_speed += gravity  # Appliquer la gravité
-            self.y += self.y_speed  # Mettre à jour la position verticale
-
-            if self.y > screen_height - self.size - 10:  # Vérifier la collision avec le sol
-
+            if self.y > screen_height - self.size - 10:
                 self.y = screen_height - self.size - 10
-                self.y_speed = 0  # Réinitialiser la vitesse après le saut
-            self.x -= self.speed  # En même temps, l'ennemi avance horizontalement
+                self.y_speed = 0
+            self.x -= self.speed
+
+        elif self.fly:
+            if self.x < player_x:
+                self.x += self.speed
+            else:
+                self.x -= self.speed
+            if self.y > player_y: 
+                self.y -= self.speed
+            else:
+                self.y += self.speed
 
         else:
             self.x -= self.speed
@@ -63,6 +76,7 @@ def main():
     red = (255, 0, 0)
     green = (0, 255, 0)
     blue = (0, 0, 255)
+    purple = (255, 0, 255)
 
     # Points de départ
     points = 0
@@ -91,12 +105,14 @@ def main():
 
     # Ennemis
     all_enemies = []
-    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, False, red, False, gravity)
+    enemy_walk = Enemy(screen_width, screen_height, enemy_normal_size, enemy_normal_speed, False, False, False, red, False, gravity, player_y)
     all_enemies.append(enemy_walk)
-    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, green, False, gravity)
+    enemy_follow = Enemy(screen_width, screen_height, enemy_low_size, enemy_very_low_speed, True, False, False, green, False, gravity, player_y)
     all_enemies.append(enemy_follow)
-    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, black, False, gravity)
+    enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, False, black, False, gravity, player_y)
     all_enemies.append(enemy_jump)
+    enemy_fly = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, True, False, False, purple, False, gravity, player_y)
+    all_enemies.append(enemy_fly)
 
     # Couleur du crayon
     pen_color = (0, 0, 0)
@@ -145,7 +161,7 @@ def main():
 
         # Déplacement des ennemis
         for enemy in all_enemies:
-            enemy.move(screen_width, screen_height, player_x, gravity)
+            enemy.move(screen_width, screen_height, player_x, gravity, player_y)
 
         # Appliquer la gravité
         player_y_speed += gravity
