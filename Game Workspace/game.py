@@ -1,8 +1,8 @@
-#from tkinter import E
-from re import S
+
 import pygame
 import sys
 import time
+from random import  randint
 
 class Enemy:
     def __init__(self, screen_width: int, screen_height: int, size: int, speed: float, follow_player: bool, jump: bool, fly: bool, color: tuple, destroy: bool, gravity: float, player_y: float):
@@ -36,6 +36,7 @@ class Enemy:
             if self.y == screen_height - self.size - 10:
                 self.y_speed = self.jump_strength
             self.y_speed += gravity
+            self.x -= self.speed
             self.y += self.y_speed
 
             if self.y > screen_height - self.size - 10:
@@ -111,7 +112,7 @@ def main():
     all_enemies.append(enemy_follow)
     enemy_jump = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, False, True, False, black, False, gravity, player_y)
     all_enemies.append(enemy_jump)
-    enemy_fly = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, True, False, False, purple, False, gravity, player_y)
+    enemy_fly = Enemy(screen_width, screen_height, enemy_low_size, enemy_low_speed, True, False, False, purple, False, gravity, 0)
     all_enemies.append(enemy_fly)
 
     # Couleur du crayon
@@ -149,13 +150,13 @@ def main():
         keys = pygame.key.get_pressed()
 
         # Déplacement du personnage
-        if keys[pygame.K_LEFT] and player_x > 0:
+        if (keys[pygame.K_LEFT] or keys[pygame.K_q]) and player_x > 0:
             player_x -= 5
-        if keys[pygame.K_RIGHT] and player_x < screen_width - player_size:
+        if (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and player_x < screen_width - player_size:
             player_x += 5
 
         # Saut du personnage
-        if (keys[pygame.K_SPACE] or keys[pygame.K_UP]) and on_ground:
+        if (keys[pygame.K_SPACE] or keys[pygame.K_UP] or keys[pygame.K_z]) and on_ground:
             player_y_speed = jump_strength
             on_ground = False
 
@@ -251,6 +252,8 @@ def main():
                 player_y = screen_height - player_size - 10
                 enemy_walk.x = screen_width
                 enemy_follow.x = screen_width
+                enemy_fly.x = 0
+                enemy_jump.x = 0
                 on_ground = True
                 for enemy in all_enemies:
                     if enemy.follow_player:
