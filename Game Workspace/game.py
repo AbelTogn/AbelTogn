@@ -3,6 +3,7 @@ import pygame
 import sys
 from random import randint
 from classes import *
+from functions import *
 
 def main():
     # Initialization of Pygame
