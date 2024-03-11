@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Celsius vers Fahrenheit</title>
+        <meta charset="utf-8" content="width=device-width, initial-scale=1.0">
+        <link href="index.css" rel="stylesheet">
+        <link rel="icon" href="icone.ico" type="image/x-icon">
+        <style>
+            p{color: white;}
+            button{color:white;}
+            input{color:white;}
+            #GrandeDiv{margin-top:10%;}
+            #Div{margin-left:35%;}
+            #CelsiusFahrenheit{width:min-content;
+                height:min-content;
+                float:left;
+                border:2px solid white;
+                border-radius:5px;
+            }
+        </style>
+	</head>
+	<body>
+	   <ul class="navbar">
+            <li class="elnavbar"><a href="index.html">Home</a></li>
+            <li class="elnavbar"><a href="contacts.html">Contacts</a></li>
+            <li class="elnavbar"><a href="randomizer.html">Randomizer</a></li>
+            <li class="elnavbar"><a href="celsiusVersFarenheit.html" style="background-color: #04AA6D; float: right;">Celsius/Fahrenheit</a></li>
+        </ul>
+        <h1 class="title">Celsius/Fahrenheit</h1>
+	    <div id="GrandeDiv">
+	        <div id="Div">
+    	        <div id="CelsiusFahrenheit">
+            	    <p style="float: left;">Celsius</p>
+            	    <br><br><br>
+            		<input id="Celsius" value="" type="text" oninput="CvF()" style="float: left;">
+        		</div>
+        		<div id="CelsiusFahrenheit">
+            		<p style="float: right;">Fahrenheit</p>
+                    <br><br><br>
+            		<input id="Fahrenheit" value="" type="text" oninput="FvC()" style="float: right; text-align:right;">
+        		</div>
+    		</div>
+		</div>
+		<script>
+			function CvF(){
+				let celsiusValue = document.getElementById("Celsius").value;
+				let fahrenheitValue = celsiusValue * (9/5) + 32;
+				document.getElementById("Fahrenheit").value = fahrenheitValue;
+			}
+
+			function FvC(){
+				let fahrenheitValue = document.getElementById("Fahrenheit").value;
+				let celsiusValue = (fahrenheitValue - 32) * 5/9;
+				document.getElementById("Celsius").value = celsiusValue;
+			}
+		</script>
+	</body>
+</html>
