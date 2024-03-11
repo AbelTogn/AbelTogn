@@ -2,9 +2,9 @@ import kotlin.random.Random
 
 fun main() {
     val N = 100
-    val A = aleaTrier(N)
-    println(devinerNombre(N))
-    //println(devinerNombreAutomatique(N))
+    //val A = aleaTrier(N)
+    //println(devinerNombre(N))
+    println(devinerNombreAutomatique(N))
     //println(devinerNombreBrut(N))
     //println(aleaTrier(N))
     //println(dichotomie(A, 12))
@@ -17,7 +17,7 @@ fun devinerNombre(N: Int): Int{
 
     while (demande != nombre){
         print("Devine le nombre: ")
-        demande = readlnOrNull()?.toInt()
+        demande = readLine()?.toInt()
         nbCoup++
         if (demande != null) {
             if (demande < nombre){ println("Trop petit") }
