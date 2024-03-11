@@ -4,8 +4,8 @@ fun main() {
     val N = 100
     //val A = aleaTrier(N)
     //println(devinerNombre(N))
-    println(devinerNombreAutomatique(N))
-    //println(devinerNombreBrut(N))
+    //println(devinerNombreAutomatique(N))
+    println(devinerNombreBrut(N))
     //println(aleaTrier(N))
     //println(dichotomie(A, 12))
 }
