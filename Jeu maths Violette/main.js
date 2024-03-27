@@ -1,5 +1,7 @@
 $(document).ready(function() {
     let points = 0; // Initialisation du score
+    let timeElapsed = 0; // Temps écoulé en secondes
+    let gameInterval; // ID de l'intervalle du jeu
 
     function createContainer() {
         // Vérifier s'il y a plus de 5 conteneurs, si oui, supprimer le plus ancien
@@ -30,7 +32,7 @@ $(document).ready(function() {
             let currentPosition = parseInt(container.css('margin-top')) || 0;
             let screenHeight = $('.screen').height();
             if (currentPosition < screenHeight - container.height()) {
-                container.css('margin-top', currentPosition + 50 + 'px'); // Déplacer le conteneur de 10px vers le bas
+                container.css('margin-top', currentPosition + 10 + 'px'); // Déplacer le conteneur de 10px vers le bas
             } else {
                 clearInterval(container.intervalID); // Arrêter l'animation une fois que le conteneur atteint le bas
                 container.remove(); // Supprimer le conteneur une fois qu'il a atteint le bas de l'écran
@@ -38,13 +40,27 @@ $(document).ready(function() {
         }, 2000); // Toutes les 2 secondes
     }
 
+    function startGame() {
+        gameInterval = setInterval(function() {
+            timeElapsed++;
+            $('#timer').text("Temps écoulé: " + timeElapsed + " secondes");
+            if (timeElapsed >= 30) { // Limite de temps de 30 secondes
+                clearInterval(gameInterval);
+                $('.container').remove();
+                $('#timer').text("Temps écoulé: " + timeElapsed + " secondes. Fin du jeu.");
+            } else {
+                createContainer();
+            }
+        }, 2000); // Générer une nouvelle question toutes les 2 secondes
+    }
+
     // Gestionnaire d'événements pour le champ de limite
     $("#limit").on('keyup', function(e) {
         if (e.key === 'Enter') {
-            // Démarrer la boucle de jeu
-            createContainer(); // Créer le premier conteneur
+            startGame(); // Démarrer le jeu
             $("#answer").focus(); // Mettre le focus sur le champ de réponse
             $('#points').html(points); // Mettre à jour l'affichage des points
+            $('#timer').html("Temps écoulé: " + timeElapsed + " secondes"); // Afficher le temps écoulé initial
             // Ajouter un gestionnaire d'événements pour le champ de réponse
             $('#answer').off('keyup').on('keyup', function(e) {
                 if (e.key === 'Enter') {
