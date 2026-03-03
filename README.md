@@ -1,4 +1,4 @@
-- 👋 Hi, I’m Abel Tognoni, I am a french 17 years old
+- 👋 Hi, I’m Abel Tognoni, I am a french 18 years old
 - 👀 I’m interested in app developpment
 - 🌱 I’m currently learning kotlin
 - 📫 How to reach me: abeltognonipro@gmail.com
